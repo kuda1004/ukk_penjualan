@@ -18,10 +18,10 @@ Route::get('register', [AuthController::class, 'showRegisterForm'])->name('regis
 Route::post('register', [AuthController::class, 'register']);
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/dashboard', [Layout::class, 'index'])->name('dashboard');
-Route::resource('detailpenjualan', DetailpenjualanController::class);
-Route::resource('penjualan', PenjualanController::class);
-Route::resource('produk', ProdukController::class);
-Route::resource('pelanggan', PelangganController::class);
+Route::resource('detailpenjualan', DetailpenjualanController::class)->middleware('auth');
+Route::resource('penjualan', PenjualanController::class)->middleware('auth');
+Route::resource('produk', ProdukController::class)->middleware('auth');
+Route::resource('pelanggan', PelangganController::class)->middleware('auth');
 
 Route::get('/dashboard', [Layout::class, 'index'])->middleware('auth');
 

@@ -46,7 +46,9 @@
                     <div class="form-group mb-3">
                         <label for="jumlahproduk">Jumlah Produk</label>
                         <input type="number" class="form-control" id="jumlahproduk" name="jumlahproduk" 
-                            value="{{ $detailpenjualan->jumlahproduk }}" required min="1" max="{{ $detailpenjualan->produk->stok }}">
+                        value="{{ $detailpenjualan->jumlahproduk }}" required min="1" 
+                        max="{{ $detailpenjualan->produk->stok + $detailpenjualan->jumlahproduk }}">
+
                     </div>
                     
                     <div class="form-group mb-3">
@@ -81,17 +83,23 @@
 
     document.getElementById('jumlahproduk').addEventListener('input', updateSubtotal);
     document.getElementById('produkid').addEventListener('change', function() {
-        let selectedOption = this.options[this.selectedIndex];
-        let stok = selectedOption.getAttribute('data-stok') || 0;
-        let jumlahInput = document.getElementById('jumlahproduk');
+    let selectedOption = this.options[this.selectedIndex];
+    let stok = parseInt(selectedOption.getAttribute('data-stok')) || 0;
+    let jumlahInput = document.getElementById('jumlahproduk');
 
-        jumlahInput.max = stok;
-        if (jumlahInput.value > stok) {
-            jumlahInput.value = stok;
-        }
+    // Ambil jumlah lama yang sedang diedit
+    let jumlahLama = parseInt(jumlahInput.value) || 0;
 
-        updateSubtotal();
-    });
+    // Set batas maksimal: stok saat ini + jumlah produk yang sedang diedit
+    jumlahInput.max = stok + jumlahLama;
+
+    if (jumlahInput.value > jumlahInput.max) {
+        jumlahInput.value = jumlahInput.max;
+    }
+
+    updateSubtotal();
+});
+
 
     window.onload = function() {
         updateSubtotal();

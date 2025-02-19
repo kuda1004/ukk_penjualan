@@ -46,9 +46,21 @@ return new class extends Migration
             WHERE produks.produkid = NEW.produkid;
 
             -- Update totalharga penjualan (mengurangi dengan subtotal lama, menambah dengan subtotal baru)
-            UPDATE penjualans
-            SET totalharga = totalharga - OLD.subtotal + NEW.subtotal
-            WHERE penjualans.penjualanid = NEW.penjualanid;
+            IF OLD.penjualanid <> NEW.penjualanid THEN
+                UPDATE penjualans
+                SET totalharga = totalharga - OLD.subtotal
+                WHERE penjualans.penjualanid = OLD.penjualanid;
+
+                -- 4. Tambahkan totalharga ke penjualan baru
+                UPDATE penjualans
+                SET totalharga = totalharga + NEW.subtotal
+                WHERE penjualans.penjualanid = NEW.penjualanid;
+            ELSE
+                -- Jika penjualanid tidak berubah, cukup update totalharga langsung
+                UPDATE penjualans
+                SET totalharga = totalharga - OLD.subtotal + NEW.subtotal
+                WHERE penjualans.penjualanid = NEW.penjualanid;
+            END IF;
         END
     ');
 
